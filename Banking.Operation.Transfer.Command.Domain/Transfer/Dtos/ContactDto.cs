@@ -10,7 +10,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Dtos
 
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public ClientDto Client { get; set; }
+        public int Account { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
     }

@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
 {
-    public interface IClientService
+    public interface IBalanceService
     {
-        Task<ClientDto> GetOne(Guid id);
-        Task<ClientDto> GetByAccount(int account);
+        Task<BalanceDto> GetBalance(Guid clientId);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Banking.Operation.Transfer.Command.Domain.Abstractions.Exceptions;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Dtos;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Entities;
+using Banking.Operation.Transfer.Command.Domain.Transfer.Enums;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Repositories;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -9,15 +11,27 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
 {
     public class TransferService : ITransferService
     {
+        private readonly ILogger<TransferService> _logger;
         private readonly ITransferRepository _transferRepository;
         private readonly IClientService _clientService;
         private readonly IContactService _contactService;
+        private readonly IBalanceService _balanceService;
+        private readonly ITransactionService _transactionService;
 
-        public TransferService(ITransferRepository transferRepository, IClientService clientService, IContactService contactService)
+        public TransferService(
+            ILogger<TransferService> logger,
+            ITransferRepository transferRepository,
+            IClientService clientService,
+            IContactService contactService,
+            IBalanceService balanceService, 
+            ITransactionService transactionService)
         {
+            _logger = logger;
             _transferRepository = transferRepository;
             _clientService = clientService;
             _contactService = contactService;
+            _balanceService = balanceService;
+            _transactionService = transactionService;
         }
 
         public async Task<ResponseTransferDto> Save(Guid clientId, RequestTransferDto transfer)
@@ -26,6 +40,10 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
 
             var contact = await ValidateContact(client, transfer.ContactId);
 
+            await ValidateBalance(clientId, transfer.Value);
+
+            await MakeTransactions(client, contact, transfer.Value);
+
             var transactionEntity = new TransferEntity(client, contact, transfer.Value);
 
             await _transferRepository.Add(transactionEntity);
@@ -33,28 +51,66 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             return new ResponseTransferDto(transactionEntity);
         }
 
+        private async Task MakeTransactions(ClientDto client, ContactDto contact, decimal value)
+        {
+            try
+            {
+                await _transactionService.Post(client.Id, TransactionType.Debit, value);
+
+                var contactClient = await _clientService.GetByAccount(contact.Account);
+
+                await _transactionService.Post(contactClient.Id, TransactionType.Credit, value);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error on MakeTransactions: {ex}");
+                throw new BussinessException("Operation not performed", "Unable to perform transaction postings");
+            }
+        }
+
+        private async Task ValidateBalance(Guid clientId, decimal transferValue)
+        {
+            try
+            {
+                var balance = await _balanceService.GetBalance(clientId);
+
+                if (balance.Value < transferValue)
+                {
+                    throw new BussinessException("Operation not performed", "Balance unavailable to carry out the operation");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error on ValidateBalance: {ex}");
+                throw new BussinessException("Operation not performed", "Balance unavailable to carry out the operation");
+            }
+        }
+
         private async Task<ClientDto> ValidateClient(Guid clientId)
         {
-            var client = await _clientService.GetOne(clientId);
-
-            if (client is null)
+            try
             {
-                throw new BussinessException("Operation not performed", "Client not registered");
+                return await _clientService.GetOne(clientId);
             }
-
-            return client;
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error on ValidateClient: {ex}");
+                throw new BussinessException("Operation not performed", "Client not registered");
+            }            
         }
 
         private async Task<ContactDto> ValidateContact(ClientDto client, Guid contactId)
         {
-            var contact = await _contactService.GetOne(client.Id, contactId);
-
-            if (contact is null)
+            try
             {
+                return await _contactService.GetOne(client.Id, contactId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error on ValidateContact: {ex}");
                 throw new BussinessException("Operation not performed", "Contact not registered");
             }
-
-            return contact;
         }
     }
 }

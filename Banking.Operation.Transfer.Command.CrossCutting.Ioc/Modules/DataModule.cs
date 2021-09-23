@@ -18,6 +18,10 @@ namespace Banking.Operation.Transfer.Command.CrossCutting.Ioc.Modules
             services.AddSingleton(clientParameters);
             var contactParameters = configuration.GetSection("ContactApi").Get<ContactApiParameters>();
             services.AddSingleton(contactParameters);
+            var balanceParameters = configuration.GetSection("BalanceApi").Get<BalanceApiParameters>();
+            services.AddSingleton(balanceParameters);
+            var transactionParameters = configuration.GetSection("TransactionApi").Get<TransactionApiParameters>();
+            services.AddSingleton(transactionParameters);
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var serverVersion = new MySqlServerVersion(new Version(8, 0, 26));

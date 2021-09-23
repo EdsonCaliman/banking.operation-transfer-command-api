@@ -1,12 +1,12 @@
 version: '3.1'
 
 services:
-
   db:
     image: mysql:8.0.26
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "1234"
+      MYSQL_DATABASE: banking-operation-transfer
     ports:
-      - "3306:3306"
+      - "3308:3306"

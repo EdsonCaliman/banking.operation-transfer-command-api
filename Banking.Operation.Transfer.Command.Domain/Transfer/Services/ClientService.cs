@@ -17,6 +17,16 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             _clientApiParameters = clientApiParameters;
         }
 
+        public async Task<ClientDto> GetByAccount(int account)
+        {
+            var finalClientRelativeUrl = string.Format(_clientRelativeUrl, account);
+
+            return await _clientApiParameters
+                .Url
+                .AppendPathSegment(finalClientRelativeUrl)
+                .GetJsonAsync<ClientDto>();
+        }
+
         public async Task<ClientDto> GetOne(Guid id)
         {
             var finalClientRelativeUrl = string.Format(_clientRelativeUrl, id);

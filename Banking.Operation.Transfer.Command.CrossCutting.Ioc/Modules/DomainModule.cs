@@ -10,6 +10,8 @@ namespace Banking.Operation.Transfer.Command.CrossCutting.Ioc.Modules
             services.AddScoped<ITransferService, TransferService>();
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<IBalanceService, BalanceService>();
+            services.AddScoped<ITransactionService, TransactionService>();
         }
     }
 }
