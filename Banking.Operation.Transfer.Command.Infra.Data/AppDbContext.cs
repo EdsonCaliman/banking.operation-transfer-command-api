@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Banking.Operation.Transfer.Command.Domain.Transfer.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Banking.Operation.Transfer.Command.Infra.Data
 {
@@ -9,5 +10,7 @@ namespace Banking.Operation.Transfer.Command.Infra.Data
         {
 
         }
+
+        public DbSet<TransferEntity> Transfer { get; set; }
     }
 }

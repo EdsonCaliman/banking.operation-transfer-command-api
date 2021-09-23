@@ -25,8 +25,4 @@
     <ProjectReference Include="..\Banking.Operation.Transfer.Command.Domain\Banking.Operation.Transfer.Command.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
