@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  mysql-transfer:
+    container_name: mysql-transfer
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: banking-operation-transfer
+    ports:
+      - "3308:3306"
+    volumes:
+      - "./scripts/create-transfer-table.sql:/docker-entrypoint-initdb.d/1.sql"
+
+  banking.operation.transfer.command.api:
+    container_name: transfer.command.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:DefaultConnection=server=mysql-transfer;port=3306;user=root;password=1234;database=banking-operation-transfer"
+      - "ClientApi:Url=http://banking.operation.client.api:80/v1/banking-operation"
+      - "ContactApi:Url=http://banking.operation.contact.api:80/v1/banking-operation"
+      - "TransactionApi:Url=http://banking.operation.transaction.api:80/v1/banking-operation"
+      - "BalanceApi:Url=http://banking.operation.balance.query.api:80/v1/banking-operation"
+    depends_on:
+      - mysql-transfer
+    ports:
+      - "8004:80"
