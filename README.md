@@ -20,7 +20,7 @@ This component will be responsible for register the transfer and make the credit
  - The request needs to have a valid client.
  - The request needs to have a valid contact.
  - The origin client needs to have enough balance.
- - The value needs to be between 0 and 10000.
+ - The value needs to be between 0.1 and 10000.
 
 # How to run
 
