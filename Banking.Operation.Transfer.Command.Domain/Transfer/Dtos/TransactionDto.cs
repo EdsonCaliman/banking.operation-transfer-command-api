@@ -1,7 +1,9 @@
 ﻿using Banking.Operation.Transfer.Command.Domain.Transfer.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Banking.Operation.Transfer.Command.Domain.Transfer.Dtos
 {
+    [ExcludeFromCodeCoverage]
     public class TransactionDto
     {
         public TransactionDto(TransactionType type, decimal value)

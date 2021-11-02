@@ -2,9 +2,11 @@
 using Banking.Operation.Transfer.Command.Domain.Transfer.Dtos;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Banking.Operation.Transfer.Command.Domain.Transfer.Entities
 {
+    [ExcludeFromCodeCoverage]
     public class TransferEntity
     {
         public TransferEntity(ClientDto client, ContactDto contact, decimal value)

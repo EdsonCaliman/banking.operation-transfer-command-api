@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Banking.Operation.Transfer.Command.Domain.Transfer.Dtos
 {
+    [ExcludeFromCodeCoverage]
     public class RequestTransferDto
     {
         [Required(ErrorMessage = "ContactId is mandatory")]

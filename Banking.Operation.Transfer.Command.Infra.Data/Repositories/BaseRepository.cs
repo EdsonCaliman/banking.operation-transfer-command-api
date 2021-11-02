@@ -1,12 +1,14 @@
 ﻿using Banking.Operation.Transfer.Command.Domain.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Banking.Operation.Transfer.Command.Infra.Data.Repositories
 {
+    [ExcludeFromCodeCoverage]
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected readonly AppDbContext _context;

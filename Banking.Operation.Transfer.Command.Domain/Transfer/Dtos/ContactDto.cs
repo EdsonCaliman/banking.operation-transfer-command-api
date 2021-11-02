@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Banking.Operation.Transfer.Command.Domain.Transfer.Dtos
 {
+    [ExcludeFromCodeCoverage]
     public class ContactDto
     {
         public ContactDto()

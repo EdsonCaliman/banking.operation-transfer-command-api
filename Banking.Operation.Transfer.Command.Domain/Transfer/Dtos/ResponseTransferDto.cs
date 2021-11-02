@@ -1,8 +1,10 @@
 ﻿using Banking.Operation.Transfer.Command.Domain.Transfer.Entities;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Banking.Operation.Transfer.Command.Domain.Transfer.Dtos
 {
+    [ExcludeFromCodeCoverage]
     public class ResponseTransferDto
     {
         public ResponseTransferDto(TransferEntity entity)

@@ -1,8 +1,10 @@
 ﻿using Banking.Operation.Transfer.Command.Domain.Transfer.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Banking.Operation.Transfer.Command.CrossCutting.Ioc.Modules
 {
+    [ExcludeFromCodeCoverage]
     public static class DomainModule
     {
         public static void Register(this IServiceCollection services)
