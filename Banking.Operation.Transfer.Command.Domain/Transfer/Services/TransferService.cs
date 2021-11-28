@@ -55,16 +55,16 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
         {
             try
             {
-                await _transactionService.Post(client.Id, TransactionType.Debit, value);
-
                 var contactClient = await _clientService.GetByAccount(contact.Account);
+
+                await _transactionService.Post(client.Id, TransactionType.Debit, value);                
 
                 await _transactionService.Post(contactClient.Id, TransactionType.Credit, value);
 
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error on MakeTransactions: {ex}");
+                _logger.LogError($"Error on MakeTransactions", ex);
                 throw new BussinessException("Operation not performed", "Unable to perform transaction postings");
             }
         }
@@ -82,7 +82,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error on ValidateBalance: {ex}");
+                _logger.LogError($"Error on ValidateBalance", ex);
                 throw new BussinessException("Operation not performed", "Balance unavailable to carry out the operation");
             }
         }
@@ -95,7 +95,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error on ValidateClient: {ex}");
+                _logger.LogError($"Error on ValidateClient", ex);
                 throw new BussinessException("Operation not performed", "Client not registered");
             }            
         }
@@ -108,7 +108,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error on ValidateContact: {ex}");
+                _logger.LogError($"Error on ValidateContact", ex);
                 throw new BussinessException("Operation not performed", "Contact not registered");
             }
         }
