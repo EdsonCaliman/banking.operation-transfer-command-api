@@ -23,6 +23,9 @@ namespace Banking.Operation.Transfer.Command.CrossCutting.Ioc.Modules
             services.AddSingleton(balanceParameters);
             var transactionParameters = configuration.GetSection("TransactionApi").Get<TransactionApiParameters>();
             services.AddSingleton(transactionParameters);
+            var kafkaParameters = configuration.GetSection("KafkaParameters").Get<KafkaParameters>();
+            services.AddSingleton(kafkaParameters);
+
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var serverVersion = new MySqlServerVersion(new Version(8, 0, 26));

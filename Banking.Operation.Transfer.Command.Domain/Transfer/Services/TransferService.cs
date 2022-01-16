@@ -17,14 +17,16 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
         private readonly IContactService _contactService;
         private readonly IBalanceService _balanceService;
         private readonly ITransactionService _transactionService;
+        private readonly IReceiptService _receiptService;
 
         public TransferService(
             ILogger<TransferService> logger,
             ITransferRepository transferRepository,
             IClientService clientService,
             IContactService contactService,
-            IBalanceService balanceService, 
-            ITransactionService transactionService)
+            IBalanceService balanceService,
+            ITransactionService transactionService, 
+            IReceiptService receiptService)
         {
             _logger = logger;
             _transferRepository = transferRepository;
@@ -32,6 +34,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             _contactService = contactService;
             _balanceService = balanceService;
             _transactionService = transactionService;
+            _receiptService = receiptService;
         }
 
         public async Task<ResponseTransferDto> Save(Guid clientId, RequestTransferDto transfer)
@@ -44,11 +47,37 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
 
             await MakeTransactions(client, contact, transfer.Value);
 
-            var transactionEntity = new TransferEntity(client, contact, transfer.Value);
+            var transferEntity = new TransferEntity(client, contact, transfer.Value);
 
-            await _transferRepository.Add(transactionEntity);
+            await _transferRepository.Add(transferEntity);
 
-            return new ResponseTransferDto(transactionEntity);
+            await SendReceipt(client, contact, transferEntity);
+
+            return new ResponseTransferDto(transferEntity);
+        }
+
+        private async Task SendReceipt(ClientDto client, ContactDto contact, TransferEntity transferEntity)
+        {
+            try
+            {
+                var receipt = new ReceiptDto(
+                transferEntity.Id,
+                client.Id,
+                client.Name,
+                contact.Id,
+                contact.Name,
+                transferEntity.Value,
+                transferEntity.CreatedAt,
+                transferEntity.CreatedBy
+                );
+
+            await _receiptService.PublishReceipt(receipt);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error on SendReceipt", ex);
+                throw new BussinessException("Operation not performed", $"Unable to create the receipt + {ex.Message}");
+            }
         }
 
         private async Task MakeTransactions(ClientDto client, ContactDto contact, decimal value)

@@ -25,6 +25,7 @@ namespace Banking.Operation.Transfer.Command.Tests.Transfer.Services
         private Mock<IBalanceService> _balanceService;
         private Mock<ITransactionService> _transactionService;
         private Mock<ILogger<TransferService>> _logger;
+        private Mock<IReceiptService> _receiptService;
         private Fixture _fixture;
 
         [SetUp]
@@ -37,6 +38,7 @@ namespace Banking.Operation.Transfer.Command.Tests.Transfer.Services
             _balanceService = _mockBuilder.Create<IBalanceService>();
             _transactionService = _mockBuilder.Create<ITransactionService>();
             _logger = _mockBuilder.Create<ILogger<TransferService>>();
+            _receiptService = _mockBuilder.Create<IReceiptService>();
             _fixture = new Fixture();
 
             _transferService = new TransferService(
@@ -45,7 +47,8 @@ namespace Banking.Operation.Transfer.Command.Tests.Transfer.Services
                 _clientService.Object,
                 _contactService.Object, 
                 _balanceService.Object,
-                _transactionService.Object);
+                _transactionService.Object,
+                _receiptService.Object);
         }
 
         [Test]

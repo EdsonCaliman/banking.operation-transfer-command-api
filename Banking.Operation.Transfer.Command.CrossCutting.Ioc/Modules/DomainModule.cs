@@ -1,4 +1,5 @@
 ﻿using Banking.Operation.Transfer.Command.Domain.Transfer.Services;
+using Banking.Operation.Transfer.Command.Infra.Data.MessageBroker;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 
@@ -14,6 +15,7 @@ namespace Banking.Operation.Transfer.Command.CrossCutting.Ioc.Modules
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IBalanceService, BalanceService>();
             services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IReceiptService, ReceiptService>();
         }
     }
 }
