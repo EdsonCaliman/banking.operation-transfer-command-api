@@ -68,6 +68,8 @@ namespace Banking.Operation.Transfer.Command.Tests.Transfer.Services
             _transactionService.Setup(t => t.Post(contactClient.Id, TransactionType.Credit, requestTransactionDto.Value))
                 .Returns(Task.CompletedTask);
             _transferRepository.Setup(t => t.Add(It.IsAny<TransferEntity>())).Returns(Task.CompletedTask);
+            _receiptService.Setup(t => t.PublishReceipt(It.IsAny<ReceiptDto>()))
+                .Returns(Task.CompletedTask);
 
             var transactionDto = await _transferService.Save(client.Id, requestTransactionDto);
 

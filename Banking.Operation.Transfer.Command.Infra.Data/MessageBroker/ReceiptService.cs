@@ -2,11 +2,13 @@
 using Banking.Operation.Transfer.Command.Domain.Transfer.Parameters;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Services;
 using Confluent.Kafka;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Banking.Operation.Transfer.Command.Infra.Data.MessageBroker
 {
+    [ExcludeFromCodeCoverage]
     public class ReceiptService : IReceiptService
     {
         private readonly KafkaParameters _kafkaParameters;
