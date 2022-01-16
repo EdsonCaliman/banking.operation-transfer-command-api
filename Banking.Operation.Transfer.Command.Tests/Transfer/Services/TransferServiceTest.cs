@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using Banking.Operation.Transfer.Command.Domain.Abstractions.Exceptions;
+using Banking.Operation.Transfer.Command.Domain.Abstractions.Services;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Dtos;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Entities;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Enums;
@@ -26,6 +27,7 @@ namespace Banking.Operation.Transfer.Command.Tests.Transfer.Services
         private Mock<ITransactionService> _transactionService;
         private Mock<ILogger<TransferService>> _logger;
         private Mock<IReceiptService> _receiptService;
+        private Mock<INotificationService> _notificationService;
         private Fixture _fixture;
 
         [SetUp]
@@ -39,6 +41,7 @@ namespace Banking.Operation.Transfer.Command.Tests.Transfer.Services
             _transactionService = _mockBuilder.Create<ITransactionService>();
             _logger = _mockBuilder.Create<ILogger<TransferService>>();
             _receiptService = _mockBuilder.Create<IReceiptService>();
+            _notificationService = _mockBuilder.Create<INotificationService>();
             _fixture = new Fixture();
 
             _transferService = new TransferService(
@@ -48,7 +51,8 @@ namespace Banking.Operation.Transfer.Command.Tests.Transfer.Services
                 _contactService.Object, 
                 _balanceService.Object,
                 _transactionService.Object,
-                _receiptService.Object);
+                _receiptService.Object,
+                _notificationService.Object);
         }
 
         [Test]
@@ -70,6 +74,7 @@ namespace Banking.Operation.Transfer.Command.Tests.Transfer.Services
             _transferRepository.Setup(t => t.Add(It.IsAny<TransferEntity>())).Returns(Task.CompletedTask);
             _receiptService.Setup(t => t.PublishReceipt(It.IsAny<ReceiptDto>()))
                 .Returns(Task.CompletedTask);
+            _notificationService.Setup(t => t.PublishMessage(It.IsAny<MessageDto>()));
 
             var transactionDto = await _transferService.Save(client.Id, requestTransactionDto);
 

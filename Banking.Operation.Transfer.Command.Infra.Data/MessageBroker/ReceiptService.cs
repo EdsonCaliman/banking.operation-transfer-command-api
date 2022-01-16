@@ -1,6 +1,6 @@
-﻿using Banking.Operation.Transfer.Command.Domain.Transfer.Dtos;
+﻿using Banking.Operation.Transfer.Command.Domain.Abstractions.Services;
+using Banking.Operation.Transfer.Command.Domain.Transfer.Dtos;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Parameters;
-using Banking.Operation.Transfer.Command.Domain.Transfer.Services;
 using Confluent.Kafka;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;

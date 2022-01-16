@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Banking.Operation.Transfer.Command.Domain.Abstractions.Services
 {
-    public interface IReceiptService
+    public interface INotificationService
     {
-        Task PublishReceipt(ReceiptDto receipt);
+        void PublishMessage(MessageDto message);
     }
 }

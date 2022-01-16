@@ -1,4 +1,5 @@
 ﻿using Banking.Operation.Transfer.Command.Domain.Abstractions.Exceptions;
+using Banking.Operation.Transfer.Command.Domain.Abstractions.Services;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Dtos;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Entities;
 using Banking.Operation.Transfer.Command.Domain.Transfer.Enums;
@@ -18,6 +19,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
         private readonly IBalanceService _balanceService;
         private readonly ITransactionService _transactionService;
         private readonly IReceiptService _receiptService;
+        private readonly INotificationService _notificationService;
 
         public TransferService(
             ILogger<TransferService> logger,
@@ -25,8 +27,9 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             IClientService clientService,
             IContactService contactService,
             IBalanceService balanceService,
-            ITransactionService transactionService, 
-            IReceiptService receiptService)
+            ITransactionService transactionService,
+            IReceiptService receiptService, 
+            INotificationService notificationService)
         {
             _logger = logger;
             _transferRepository = transferRepository;
@@ -35,6 +38,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             _balanceService = balanceService;
             _transactionService = transactionService;
             _receiptService = receiptService;
+            _notificationService = notificationService;
         }
 
         public async Task<ResponseTransferDto> Save(Guid clientId, RequestTransferDto transfer)
@@ -53,7 +57,33 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
 
             await SendReceipt(client, contact, transferEntity);
 
+            SendNotification(client, contact, transferEntity);
+
             return new ResponseTransferDto(transferEntity);
+        }
+
+        private void SendNotification(ClientDto client, ContactDto contact, TransferEntity transferEntity)
+        {
+            try
+            {
+                var message = new MessageDto(
+                transferEntity.Id,
+                client.Id,
+                client.Name,
+                contact.Id,
+                contact.Name,
+                transferEntity.Value,
+                transferEntity.CreatedAt,
+                transferEntity.CreatedBy
+                );
+
+                _notificationService.PublishMessage(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error on SendNotification", ex);
+                throw new BussinessException("Operation not performed", $"Unable to create the message + {ex.Message}");
+            }
         }
 
         private async Task SendReceipt(ClientDto client, ContactDto contact, TransferEntity transferEntity)
