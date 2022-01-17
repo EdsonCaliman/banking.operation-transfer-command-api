@@ -17,6 +17,7 @@ namespace Banking.Operation.Transfer.Command.CrossCutting.Ioc.Modules
             services.AddScoped<IBalanceService, BalanceService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IReceiptService, ReceiptService>();
+            services.AddScoped<INotificationService, NotificationService>();
         }
     }
 }

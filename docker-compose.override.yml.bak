@@ -63,7 +63,7 @@ services:
       - "BalanceApi:Url=http://banking.operation.balance.query.api:80/v1/banking-operation"
       - "KafkaParameters:BootstrapServers=broker:9092"
       - "KafkaParameters:Topic=banking.operation-receipt"
-      - "RabbitParameters:HostName=rabbitmq"
+      - "RabbitParameters:HostName=localhost"
       - "RabbitParameters:UserName=admin"
       - "RabbitParameters:Password=admin"
       - "RabbitParameters:Port=5672"
@@ -72,6 +72,5 @@ services:
     depends_on:
       - mysql-transfer
       - broker
-      - rabbitmq
     ports:
       - "8004:80"
