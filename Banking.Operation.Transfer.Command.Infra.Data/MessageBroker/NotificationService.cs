@@ -23,20 +23,24 @@ namespace Banking.Operation.Transfer.Command.Infra.Data.MessageBroker
                 HostName = _rabbitParameters.HostName, 
                 UserName = _rabbitParameters.UserName, 
                 Password = _rabbitParameters.Password, 
-                Port = _rabbitParameters.Port, 
-                VirtualHost = _rabbitParameters.VirtualHost
+                Port = _rabbitParameters.Port
             };
 
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 
-            channel.ExchangeDeclare(exchange: _rabbitParameters.Exchange, type: ExchangeType.Fanout);
+            channel.QueueDeclare(
+                queue: _rabbitParameters.Queue, 
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
 
             string jsonString = JsonSerializer.Serialize(message);
             var body = Encoding.UTF8.GetBytes(jsonString);
 
-            channel.BasicPublish(exchange: _rabbitParameters.Exchange,
-                                 routingKey: string.Empty,
+            channel.BasicPublish(exchange: string.Empty,                
+                                 routingKey: _rabbitParameters.Queue,
                                  basicProperties: null,
                                  body: body);
         }

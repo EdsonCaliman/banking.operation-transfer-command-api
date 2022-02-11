@@ -28,7 +28,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             IContactService contactService,
             IBalanceService balanceService,
             ITransactionService transactionService,
-            IReceiptService receiptService, 
+            IReceiptService receiptService,
             INotificationService notificationService)
         {
             _logger = logger;
@@ -67,14 +67,10 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             try
             {
                 var message = new MessageDto(
-                transferEntity.Id,
-                client.Id,
-                client.Name,
-                contact.Id,
-                contact.Name,
-                transferEntity.Value,
-                transferEntity.CreatedAt,
-                transferEntity.CreatedBy
+                    client.Name,
+                    client.Email,
+                    "Transfer performed",
+                    $"Transfer made in the amount of {transferEntity.Value}, to {contact.Name}"
                 );
 
                 _notificationService.PublishMessage(message);
@@ -82,7 +78,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Error on SendNotification", ex);
-                throw new BussinessException("Operation not performed", $"Unable to create the message + {ex.Message}");
+                throw new BussinessException("Operation not performed", $"Unable to create the message {ex.Message}");
             }
         }
 
@@ -94,6 +90,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
                 transferEntity.Id,
                 client.Id,
                 client.Name,
+                client.Email,
                 contact.Id,
                 contact.Name,
                 transferEntity.Value,
@@ -101,7 +98,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
                 transferEntity.CreatedBy
                 );
 
-            await _receiptService.PublishReceipt(receipt);
+                await _receiptService.PublishReceipt(receipt);
             }
             catch (Exception ex)
             {
@@ -116,10 +113,9 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             {
                 var contactClient = await _clientService.GetByAccount(contact.Account);
 
-                await _transactionService.Post(client.Id, TransactionType.Debit, value);                
+                await _transactionService.Post(client.Id, TransactionType.Debit, value);
 
                 await _transactionService.Post(contactClient.Id, TransactionType.Credit, value);
-
             }
             catch (Exception ex)
             {
@@ -156,7 +152,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Services
             {
                 _logger.LogError($"Error on ValidateClient", ex);
                 throw new BussinessException("Operation not performed", "Client not registered");
-            }            
+            }
         }
 
         private async Task<ContactDto> ValidateContact(ClientDto client, Guid contactId)

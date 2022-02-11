@@ -4,12 +4,13 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Dtos
 {
     public class ReceiptDto
     {
-        public ReceiptDto(Guid id, Guid clientId, string clientName, Guid contactId, 
+        public ReceiptDto(Guid id, Guid clientId, string clientName, string clientEmail, Guid contactId, 
             string contactName, decimal value, DateTime createdAt, string createdBy)
         {
             Id = id;
             ClientId = clientId;
             ClientName = clientName;
+            ClientEmail = clientEmail;
             ContactId = contactId;
             ContactName = contactName;
             Value = value;
@@ -20,6 +21,7 @@ namespace Banking.Operation.Transfer.Command.Domain.Transfer.Dtos
         public Guid Id { get; set; }
         public Guid ClientId { get; set; }
         public string ClientName { get; set; }
+        public string ClientEmail { get; set; }
         public Guid ContactId { get; set; }
         public string ContactName { get; set; }
         public decimal Value { get; set; }
