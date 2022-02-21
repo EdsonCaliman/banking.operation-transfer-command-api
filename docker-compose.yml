@@ -10,16 +10,19 @@ services:
 
   broker:
     image: confluentinc/cp-kafka:6.1.1
-    
+
   rabbitmq:
     image: rabbitmq:3.7-management
-    
+
   banking.operation.transfer.command.api:
     image: ${DOCKER_REGISTRY-}bankingoperationtransfercommandapi
     build:
       context: .
       dockerfile: Banking.Operation.Transfer.Command.Api/Dockerfile
-      
+
+  viewer:
+    image: 'obsidiandynamics/kafdrop'
+
 networks:
   default:
     external: true
